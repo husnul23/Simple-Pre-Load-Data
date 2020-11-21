@@ -8,22 +8,30 @@ import com.example.simplepreloaddata.database.DatabaseContract.MahasiswaColumns.
 import com.example.simplepreloaddata.database.DatabaseContract.MahasiswaColumns.Companion.NIM
 import com.example.simplepreloaddata.database.DatabaseContract.TABLE_NAME
 
-internal class DatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+internal class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
     companion object {
+
         private const val DATABASE_NAME = "dbmahasiswa"
+
         private const val DATABASE_VERSION = 1
-        private val CREATE_TABLE_MAHASISWA =
-            "create table $TABLE_NAME ($_ID integer primary key autoincrement, $NAMA text not null, $NIM text not null);"
 
+        private val CREATE_TABLE_MAHASISWA = "create table $TABLE_NAME ($_ID integer primary key autoincrement, $NAMA text not null, $NIM text not null);"
     }
 
-    override fun onCreate(p0: SQLiteDatabase) {
-        p0.execSQL(CREATE_TABLE_MAHASISWA)
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL(CREATE_TABLE_MAHASISWA)
     }
 
-    override fun onUpgrade(p0: SQLiteDatabase, p1: Int, p2: Int) {
-        p0.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-        onCreate(p0)
+    /*
+    Method onUpgrade akan di panggil ketika terjadi perbedaan versi
+    Gunakan method onUpgrade untuk melakukan proses migrasi data
+     */
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        /*
+        Drop table tidak dianjurkan ketika proses migrasi terjadi dikarenakan data user akan hilang,
+         */
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+        onCreate(db)
     }
 }
